@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Get project data
         env:
-          GITHUB_TOKEN: ${{secrets.PROJECT_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
           ACCOUNT: https://github.com/RobertoFioravanti
 
           # number of the project https://github.com/aperson/projects/2 >
