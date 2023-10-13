@@ -49,11 +49,15 @@ jobs:
             
           echo 'PROJECT_ID='$(jq '.data.user.projectV2.id' project_data.json) >> $GITHUB_ENV
           echo 'DATE_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Date Posted") | .id' project_data.json) >> $GITHUB_ENV
+          
           echo 'STATUS_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
           echo 'TODO_OPTION_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="📋 Backlog") |.id' project_data.json) >> $GITHUB_ENV
+          
+          echo 'BILLABLE_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Billable") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'BILLABLE_OPTION_YES_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Billable") | .options[] | select(.name=="Yes") |.id' project_data.json) >> $GITHUB_ENV
+          echo 'BILLABLE_OPTION_NO_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Billable") | .options[] | select(.name=="No") |.id' project_data.json) >> $GITHUB_ENV
 
       - name: Add Issue to project
-        
         run: |
           item_id="$( gh api graphql -f query='
             mutation($project:ID!, $issue:ID!) {
@@ -72,6 +76,10 @@ jobs:
       - name: Get date
         # run: echo    'DATE="{"date":"'$(date +"%Y-%m-%dT%H:%M:%S%:z")'"}"' >> $GITHUB_ENV              #"DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
         run: echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
+
+      - name: Billable
+        run: echo "BILLABLE=$BILLABLE_OPTION_YES_ID >> $GITHUB_ENV
+        #if: contains( toJson(github), '<label_name>' )
         
       - name: Set fields
         
@@ -113,10 +121,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
           
-      - name: Bug Specific
-        if: ${{ github.event.label.name == 'bug' }}
-        run: echo TODO bug specific action!
-
-      - name: Enhancement Specific
-        if: ${{ github.event.label.name == 'enhancement' }}
-        run: echo TODO enhancement specific action!
+      - name: Default values
+        
+        run: |
+          
