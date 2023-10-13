@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Get project data
         env:
-          GH_TOKEN: ${{ secrets.MY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
           ACCOUNT: https://github.com/RobertoFioravanti
 
           # number of the project https://github.com/aperson/projects/2 >
@@ -39,7 +39,7 @@ jobs:
 
       - name: Add Issue to project
         env:
-          GH_TOKEN: ${{ secrets.MY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
           ISSUE_ID: ${{ github.event.issue.node_id }}
         run: |
           item_id="$( gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
@@ -58,7 +58,7 @@ jobs:
 
       - name: Set fields
         env:
-          GH_TOKEN: ${{ secrets.MY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
         run: |
           gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
             mutation (
