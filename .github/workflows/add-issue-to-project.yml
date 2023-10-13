@@ -11,32 +11,49 @@ jobs:
       - name: Get project data
         env:
           GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
-          ACCOUNT: RobertoFioravanti
+          ACCOUNT: ${{ github.repository_owner }}
 
           # number of the project https://github.com/aperson/projects/2 >
-          # AddIssueProject number :1 
+          # Test is number :1 
           PROJECT_NUMBER: 12
         run: | #gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
           gh api graphql -f query='
             query($account: String!, $number: Int!) {
               user(login: $account){
-                projectsV2(number: $number) {
+                projectV2(number: number) {
                   id
-                  fields(first:20) {
-                    nodes {
-                      id
-                      name
-                      settings
+                  title
+                  ... on ProjectV2 {
+                    fields(first: 20) {
+                      nodes {
+                        ... on ProjectV2Field {
+                          id
+                          name
+                        }
+                        ... on ProjectV2SingleSelectField {
+                          id
+                          name
+                          options {
+                            id
+                            name
+                          }
+                        }
+                      }
                     }
                   }
                 }
               }
             }' -f account=$ACCOUNT -F number=$PROJECT_NUMBER > project_data.json
-            
-          echo 'PROJECT_ID='$(jq '.data.user.projectNext.id' project_data.json) >> $GITHUB_ENV
-          echo 'DATE_FIELD_ID='$(jq '.data.user.projectNext.fields.nodes[] | select(.name== "Date Posted") | .id' project_data.json) >> $GITHUB_ENV
-          echo 'STATUS_FIELD_ID='$(jq '.data.user.projectNext.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
-          echo 'TODO_OPTION_ID='$(jq '.data.user.projectNext.fields.nodes[] | select(.name== "Status") |.settings | fromjson.options[] | select(.name=="Todo") |.id' project_data.json) >> $GITHUB_ENV
+            # Type queries here, and you will see intelligent autosuggestions
+# aware of GitHub's current GraphQL schema, equipped with live
+# syntax and validation errors highlighted within the text. We'll
+# get you started with a simple query showing your username!
+
+
+          echo 'PROJECT_ID='$(jq '.data.user.projectV2.id' project_data.json) >> $GITHUB_ENV
+          echo 'DATE_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Date Posted") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'STATUS_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'TODO_OPTION_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") |.settings | fromjson.options[] | select(.name=="Todo") |.id' project_data.json) >> $GITHUB_ENV
 
       - name: Add Issue to project
         
