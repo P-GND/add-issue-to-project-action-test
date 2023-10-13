@@ -4,6 +4,8 @@ on:
     types: [opened]
 env:
   GH_TOKEN: ${{ secrets.MY_TOKEN }}
+
+permissions: write-all
 jobs:
   track_issue:
     runs-on: ubuntu-latest
