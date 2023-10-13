@@ -35,14 +35,22 @@ jobs:
                       }
                     }
                   }
+                  ... on ProjectV2SingleSelectField {
+                    id
+                    name
+                    options {
+                      id
+                      name
+                    }
+                  }
                 }
               }
             }' -f account=$ACCOUNT -F number=$PROJECT_NUMBER > project_data.json
             
           echo 'PROJECT_ID='$(jq '.data.user.projectV2.id' project_data.json) >> $GITHUB_ENV
-          echo 'DATE_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Date Posted") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'DATE_FIELD_ID={"date":"'$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Date Posted") | .id' project_data.json) " >> $GITHUB_ENV
           echo 'STATUS_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
-          echo 'TODO_OPTION_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | fromjson.options[] | select(.name=="📋 Backlog") |.id' project_data.json) >> $GITHUB_ENV
+          echo 'TODO_OPTION_ID="singleSelectOptionId":"'$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | fromjson.options[] | select(.name=="📋 Backlog") |.id' project_data.json) " >> $GITHUB_ENV
 
       - name: Add Issue to project
         
@@ -72,9 +80,9 @@ jobs:
               $project: ID!
               $item: ID!
               $status_field: ID!
-              $status_value: String!
+              $status_value: ProjectV2FieldValue!
               $date_field: ID!
-              $date_value: Date!
+              $date_value: ProjectV2FieldValue!
             ) {
               set_status: updateProjectV2ItemFieldValue(input: {
                 projectId: $project
