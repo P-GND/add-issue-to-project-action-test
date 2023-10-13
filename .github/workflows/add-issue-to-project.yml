@@ -112,3 +112,11 @@ jobs:
             }' -f project=$PROJECT_ID -f item=$ITEM_ID -f status_field=$STATUS_FIELD_ID -f status_value=${{ env.TODO_OPTION_ID }} -f date_field=$DATE_FIELD_ID -f date_value=$DATE --silent
         env:
           GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+          
+      - name: Bug Specific
+        if: ${{ github.event.label.name == 'bug' }}
+        run: echo TODO bug specific action!
+
+      - name: Enhancement Specific
+        if: ${{ github.event.label.name == 'enhancement' }}
+        run: echo TODO enhancement specific action!
