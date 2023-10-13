@@ -50,7 +50,7 @@ jobs:
           echo 'PROJECT_ID='$(jq '.data.user.projectV2.id' project_data.json) >> $GITHUB_ENV
           echo 'DATE_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Date Posted") | .id' project_data.json) >> $GITHUB_ENV
           echo 'STATUS_FIELD_ID='$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
-          echo 'TODO_OPTION_ID={"singleSelectOptionId":"'$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status") | fromjson.options[] | select(.name=="📋 Backlog") |.id' project_data.json) '"}' >> $GITHUB_ENV
+          echo 'TODO_OPTION_ID={"singleSelectOptionId":"'$(jq '.data.user.projectV2.fields.nodes[] | select(.name== "Status").options[] | select(.name=="📋 Backlog") |.id' project_data.json) '"}' >> $GITHUB_ENV
 
       - name: Add Issue to project
         
@@ -70,7 +70,7 @@ jobs:
           ISSUE_ID: ${{ github.event.issue.node_id }}
 
       - name: Get date
-        run: echo    'DATE={""date"":"$(date +"%Y-%m-%dT%H:%M:%S%:z")""}' >> $GITHUB_ENV              #"DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
+        run: echo    'DATE={"date":$(date +"%Y-%m-%dT%H:%M:%S%:z")}' >> $GITHUB_ENV              #"DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
 
       - name: Set fields
         
