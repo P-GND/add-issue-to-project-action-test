@@ -11,7 +11,7 @@ jobs:
       - name: Get project data
         env:
           GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
-          ACCOUNT: https://github.com/RobertoFioravanti
+          ACCOUNT: RobertoFioravanti
 
           # number of the project https://github.com/aperson/projects/2 >
           # AddIssueProject number :1 
