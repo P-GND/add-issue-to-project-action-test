@@ -22,7 +22,7 @@ jobs:
           gh api graphql -f query='
             query($account: String!, $number: Int!) {
               user(login: $account){
-                projectV2(number: number) {
+                projectV2(number: $number) {
                   id
                   title
                   ... on ProjectV2 {
