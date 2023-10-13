@@ -16,11 +16,11 @@ jobs:
           # number of the project https://github.com/aperson/projects/2 >
           # AddIssueProject number :1 
           PROJECT_NUMBER: 12
-        run: | 
-          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+        run: | #gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+          gh api graphql -f query='
             query($account: String!, $number: Int!) {
               user(login: $account){
-                projectNext(number: $number) {
+                projectsV2(number: $number) {
                   id
                   fields(first:20) {
                     nodes {
